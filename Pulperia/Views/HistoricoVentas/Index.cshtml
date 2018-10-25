@@ -1,0 +1,124 @@
+﻿@model IEnumerable<Pulperia.Models.HistoricoVentas>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Historico de Ventas</h2>
+@using (Html.BeginForm("Index", "HistoricoVentas"))
+{
+    @Html.AntiForgeryToken()
+<div class="form-horizontal">
+    <hr />
+    <div class="form-group">
+        @Html.Label("Mes", null, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DropDownList("mesId", new SelectList(ViewBag.Meses, "valor", "mes"), new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.Label("Año", null, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DropDownList("annoId", new SelectList(ViewBag.Annos, "Key", "Value"), new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Filtrar" class="btn btn-default" />
+        </div>
+    </div>
+    <hr />
+</div>
+}
+
+    <div>
+        <table class="table">
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Cantidad)
+                </th>
+                <th>
+                    Precio Pulperia
+                </th>
+                <th>
+                    Fecha de Compra
+                </th>
+                <th>
+                    Comprador
+                </th>
+                <th>
+                    Producto
+                </th>
+                <th>
+                    Precio Producto
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Mes)
+                </th>
+                <th>
+                    Año
+                </th>
+                <th></th>
+            </tr>
+
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Cantidad)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Precio)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FechaCompra)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.NombreComprador)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.NombreProducto)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PrecioOriginalProducto)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Mes)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Anno)
+                    </td>
+                    <td>
+                        @Html.ActionLink("Editar", "Edit", new { id = item.Id })
+                    </td>
+                </tr>
+            }
+
+        </table>
+        <hr />
+        <div>
+            <table class="table">
+                <tr>
+                    <th>TOTAL Recaudado:</th>
+                    <th>TOTAL Vendido:</th>
+                    <th>GANANCIAS DEL PERIODO:</th>
+                </tr>
+                <tr>
+                    <td>¢ @ViewBag.TotalCompras</td>
+                    <td>¢ @ViewBag.TotalVendido</td>
+                    <td>¢ @ViewBag.TotalPeriodo</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+
+@section Scripts {
+    <script type="text/javascript">
+    $(document).ready(function () {
+        $("#mesId option[value='" + '@ViewBag.MesSeleccionado' + "']").attr("selected", "selected");
+        $("#annoId option[value='"+ '@ViewBag.AnnoSeleccionado'+"']").attr("selected", "selected");
+    });
+    </script>
+}

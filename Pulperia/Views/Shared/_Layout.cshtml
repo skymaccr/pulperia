@@ -1,0 +1,93 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    <link href="@Url.Content("~/css/bootstrap.css")" rel="stylesheet">
+    <link href="@Url.Content("/css/modern-business.css")" rel="stylesheet">
+
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @Html.ActionLink("Pulpería ASOGUARUMO", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+            </div>
+            <div class="navbar-collapse collapse">
+                @if (@User.Identity.IsAuthenticated && (User.IsInRole("Admin") || User.IsInRole("Pulpero")))
+                {
+                    <ul class="nav navbar-nav">
+                        <li>@Html.ActionLink("Comprar", "Index", "Ventas")</li>
+
+                        <li id="mantenimientos" class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Mantenimientos <b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li id="1columnmantenimientos">
+                                    @Html.ActionLink("Categorias", "Index", "Categorias")
+                                </li>
+                                <li id="2columnmantenimientos">
+                                    @Html.ActionLink("Parametros", "Index", "Parametros")
+                                </li>
+                                <li>@Html.ActionLink("Productos", "Index", "Productos")</li>
+                                <li>@Html.ActionLink("Compradores", "Index", "Compradores")</li>
+                            </ul>
+                        </li>
+
+                        <li id="ventas" class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Cierre de Ventas<b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li id="1columnventas">
+                                    @Html.ActionLink("Cierre Mensual", "Index", "Cierre")
+                                </li>
+                                <li id="2columnventas">
+                                    @Html.ActionLink("Historico de  Ventas", "Index", "HistoricoVentas")
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li id="Inventario" class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Inventario<b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li id="1columninventario">
+                                    @Html.ActionLink("Compras Inventario", "Index", "ComprasInventario")
+                                </li>
+                                <li id="2columninventario">
+                                    @Html.ActionLink("Historico Compras Inventario", "Index", "HistoricoComprasInventarios")
+                                </li>
+                            </ul>
+                        </li>
+
+                    </ul>
+                }
+                @if (@User.Identity.IsAuthenticated && (User.IsInRole("Asociado") || User.IsInRole("Vendedor")))
+                {
+                    <ul class="nav navbar-nav">
+                        <li>@Html.ActionLink("Comprar", "Index", "Ventas")</li>
+                    </ul>
+                }
+               
+                @Html.Partial("_LoginPartial")
+            </div>
+        </div>
+    </div>
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year - ASOGUARUMO</p>
+        </footer>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

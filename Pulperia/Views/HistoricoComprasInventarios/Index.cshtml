@@ -1,0 +1,122 @@
+﻿@model IEnumerable<Pulperia.Models.HistoricoComprasInventario>
+
+@{
+    ViewBag.Title = "Historico Compras de Inventario";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Historico de Compras</h2>
+@using (Html.BeginForm("Index", "HistoricoComprasInventarios"))
+{
+    @Html.AntiForgeryToken()
+<div class="form-horizontal">
+    <hr />
+    <div class="form-group">
+        @Html.Label("Mes", null, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DropDownList("mesId", new SelectList(ViewBag.Meses, "valor", "mes"), new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.Label("Año", null, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DropDownList("annoId", new SelectList(ViewBag.Annos, "Key", "Value"), new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Filtrar" class="btn btn-default" />
+        </div>
+    </div>
+    <hr />
+</div>
+}
+
+<table class="table">
+    <tr>
+
+        <th>
+            Producto
+        </th>
+        <th>
+            Cantidad en Inventario
+        </th>
+        <th>
+            Cantidad Comprada
+        </th>
+        <th>
+            Fecha de Compra
+        </th>
+        <th>
+            Fecha Vencimiento
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Lote)
+        </th>
+        <th>
+            Precio Individual
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Mes)
+        </th>
+        <th>
+            Año
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.NombreProducto)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CantidadInventario)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CantidadComprada)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FechaCompra)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FechaVencimiento)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Lote)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PrecioInvividual)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Mes)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Anno)
+            </td>
+
+        </tr>
+    }
+
+</table>
+<hr />
+<div>
+    <table class="table">
+        <tr>
+            <th>TOTAL Comprado:</th>
+        </tr>
+        <tr>
+            <td>¢ @ViewBag.TotalComprado</td>
+        </tr>
+    </table>
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+    $(document).ready(function () {
+        $("#mesId option[value='" + '@ViewBag.MesSeleccionado' + "']").attr("selected", "selected");
+        $("#annoId option[value='"+ '@ViewBag.AnnoSeleccionado'+"']").attr("selected", "selected");
+    });
+    </script>
+}

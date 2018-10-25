@@ -1,0 +1,97 @@
+﻿@model IEnumerable<Pulperia.Models.ComprasInventario>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Compras de Inventario</h2>
+
+<p>
+    @Html.ActionLink("Crear Nueva", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            Cantidad Comprada
+        </th>
+        <th>
+            Fecha de Compra
+        </th>
+        <th>
+            Fecha Vencimiento
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Lote)
+        </th>
+        <th>
+            Precio Individual
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Productos.Nombre)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.CantidadComprada)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FechaCompra)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FechaVencimiento)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Lote)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PrecioIndividual)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Productos.Nombre)
+            </td>
+            <td>
+                @Html.ActionLink("Editar", "Edit", new { id = item.Id }) |
+                @Html.ActionLink("Detalles", "Details", new { id = item.Id }) |
+                @Html.ActionLink("Eliminar", "Delete", new { id = item.Id })
+            </td>
+        </tr>
+    }
+
+</table>
+
+@using (Html.BeginForm("AjusteInventario", "ComprasInventario"))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <hr />
+        <ul>
+            <li>
+                El ajuste de Inventario se debe de realizar una vez que se registren todas las compras de nuevos productos
+            </li>
+            <li>
+                Una vez ejecutado el ajuste de inventario, se actualizara la cantidad en inventario de cada producto
+            </li>
+            <li>
+                Si desea ver compras pasadas que ajustaron el inventario ingrese al Historico de Compras de Inventario
+            </li>
+            <li>
+                El precio que se registre como "Precio Individual" sera el precio que se le colocara al producto en venta mas el porcentaje de ganancia de la pulperia
+            </li>
+            <li>
+                El porcentaje de ganancia de la pulperia se calculara automaticamente
+            </li>
+        </ul>
+        <hr />
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Ejecutar Ajuste de Inventario" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}

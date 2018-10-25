@@ -1,0 +1,86 @@
+﻿@model IEnumerable<Pulperia.Models.Productos>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Productos</h2>
+@using (Html.BeginForm("Index", "Productos"))
+{
+    @Html.AntiForgeryToken()
+<div class="form-horizontal">
+    <hr />
+    Ver productos por:
+    <div class="form-group">
+        @Html.Label("Todos", null, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.RadioButton("rbtnFiltro", "1", true, htmlAttributes: new { @class = "control-label col-md-2" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.Label("Con Inventario", null, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.RadioButton("rbtnFiltro", "2", false, htmlAttributes: new { @class = "control-label col-md-2" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.Label("Sin Inventario", null, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.RadioButton("rbtnFiltro", "3", false, htmlAttributes: new { @class = "control-label col-md-2" })
+        </div>
+    </div>           <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Filtrar" class="btn btn-default" />
+        </div>
+    </div>
+    <hr />
+</div>
+}
+<p>
+    @Html.ActionLink("Crear Nuevo", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Nombre)
+        </th>
+        <th>
+            Cantidad Inventario
+        </th>
+        <th>
+            Precio Individual
+        </th>
+        <th>
+            Categoria
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nombre)
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.CantidadInventario)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PrecioCompraIndividual)
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.Categorias.Nombre)
+            </td>
+            <td>
+                @Html.ActionLink("Editar", "Edit", new { id = item.Id }) |
+                @Html.ActionLink("Detalles", "Details", new { id = item.Id }) |
+                @Html.ActionLink("Eliminar", "Delete", new { id = item.Id })
+            </td>
+        </tr>
+    }
+
+</table>

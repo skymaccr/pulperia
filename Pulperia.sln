@@ -1,0 +1,33 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2026
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pulperia", "Pulperia\Pulperia.csproj", "{D6819776-B1E8-4648-AAF9-CDA9E535A4CA}"
+EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "PulperiaDB", "PulperiaDB\PulperiaDB.sqlproj", "{38F40EC2-461E-41E5-AF92-4F853A549F60}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D6819776-B1E8-4648-AAF9-CDA9E535A4CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6819776-B1E8-4648-AAF9-CDA9E535A4CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6819776-B1E8-4648-AAF9-CDA9E535A4CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6819776-B1E8-4648-AAF9-CDA9E535A4CA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{38F40EC2-461E-41E5-AF92-4F853A549F60}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38F40EC2-461E-41E5-AF92-4F853A549F60}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38F40EC2-461E-41E5-AF92-4F853A549F60}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{38F40EC2-461E-41E5-AF92-4F853A549F60}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38F40EC2-461E-41E5-AF92-4F853A549F60}.Release|Any CPU.Build.0 = Release|Any CPU
+		{38F40EC2-461E-41E5-AF92-4F853A549F60}.Release|Any CPU.Deploy.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1CA76191-5D13-4FC2-BF76-40324AEA7267}
+	EndGlobalSection
+EndGlobal

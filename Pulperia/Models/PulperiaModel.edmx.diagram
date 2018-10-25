@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="a3f6e94c24044befa90c7f91b53b0f2f" Name="Diagram1">
+        <EntityTypeShape EntityType="PulperiaModel.Categorias" Width="1.5" PointX="0.75" PointY="5.125" />
+        <EntityTypeShape EntityType="PulperiaModel.Compradores" Width="1.5" PointX="6" PointY="0.75" />
+        <EntityTypeShape EntityType="PulperiaModel.ComprasInventario" Width="1.5" PointX="5.25" PointY="4.625" />
+        <EntityTypeShape EntityType="PulperiaModel.HistoricoComprasInventario" Width="1.5" PointX="0.75" PointY="8.625" />
+        <EntityTypeShape EntityType="PulperiaModel.HistoricoVentas" Width="1.5" PointX="2.75" PointY="8.625" />
+        <EntityTypeShape EntityType="PulperiaModel.Parametros" Width="1.5" PointX="4.75" PointY="8.625" />
+        <EntityTypeShape EntityType="PulperiaModel.Productos" Width="1.5" PointX="3" PointY="4.25" />
+        <EntityTypeShape EntityType="PulperiaModel.Ventas" Width="1.5" PointX="8.25" PointY="4.625" />
+        <AssociationConnector Association="PulperiaModel.FK_Productos_Categorias" />
+        <AssociationConnector Association="PulperiaModel.FK_Ventas_Compradores" />
+        <AssociationConnector Association="PulperiaModel.FK_ComprasInventario_Productos" />
+        <AssociationConnector Association="PulperiaModel.FK_Ventas_Productos" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

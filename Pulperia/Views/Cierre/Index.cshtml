@@ -1,0 +1,38 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Cierre del Mes</h2>
+@using (Html.BeginForm("Run", "Cierre"))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <hr />
+        <div class="form-group">
+            <p>
+                <ul>
+                    <li>
+                        Al ejecutar el cierre mensual de pulperia se enviara un email a cada comprador con
+                        el monto de compra individual.
+                    </li>
+                    <li>
+                        El siguiente registro de compras se acumulara hasta el siguiente mes.
+                    </li>
+                    <li>
+                        Ejecute el Cierre Mensual solamente una vez al mes para evitar confusiones con los compradores.
+                    </li>
+                    <li>
+                        Si desea ver o editar cierres posteriores ingrese a la opcion "Historico de Ventas"
+                    </li>
+                </ul>
+            </p>
+            <div class="col-md-offset-2 col-md-12">
+                <input type="submit" value="Ejecutar Cierre Mensual" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
