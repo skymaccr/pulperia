@@ -1,4 +1,4 @@
-﻿using System.Web;
+﻿using Pulperia.App_Start;
 using System.Web.Mvc;
 
 namespace Pulperia
@@ -9,6 +9,9 @@ namespace Pulperia
         {
             filters.Add(new HandleErrorAttribute());
             filters.Add(new AuthorizeAttribute());
+
+            filters.Add(new CustomViewForHttpStatusResultFilter(new HttpNotFoundResult(), "Error404"));
+            filters.Add(new CustomViewForHttpStatusResultFilter(404, "Error404"));
         }
     }
 }

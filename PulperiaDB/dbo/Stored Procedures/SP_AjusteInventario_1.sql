@@ -45,7 +45,9 @@ BEGIN
 	FROM (SELECT	 
 			(pro.CantidadInventario + cin.CantidadComprada) AS CantidadInventario,
 			pro.Id	 AS IdProducto,
-			cin.PrecioIndividual AS Precio
+			--Mantener el precio mayor del producto. El producto no baja de precio a menos de que se edite en el producto
+			CASE WHEN pro.PrecioCompraIndividual < cin.PrecioIndividual THEN cin.PrecioIndividual
+			ELSE pro.PrecioCompraIndividual END AS Precio
 		  FROM	
 			ComprasInventario cin inner join Productos pro
 			on cin.IdProducto = pro.Id ) as inv

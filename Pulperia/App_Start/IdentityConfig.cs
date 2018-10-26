@@ -19,7 +19,7 @@ namespace Pulperia
         {
             var myMessage = new SendGridMessage();
             myMessage.AddTo(message.Destination);
-            myMessage.From = new EmailAddress("pulperiaasoguarumo@cecropiasolutions.com", "Pulperia Asoguarumo");
+            myMessage.From = new EmailAddress("asoguarumo@cecropiasolutions.com", "Asociacion Guarumo Soluciones");
             myMessage.Subject = message.Subject;
             myMessage.PlainTextContent = message.Body;
             myMessage.HtmlContent = message.Body;

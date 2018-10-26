@@ -3,7 +3,6 @@ using Microsoft.AspNet.Identity.Owin;
 using Pulperia.Models;
 using Pulperia.Utils;
 using System;
-using System.Collections.Generic;
 using System.Configuration;
 using System.Globalization;
 using System.Linq;

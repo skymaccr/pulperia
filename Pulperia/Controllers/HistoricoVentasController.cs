@@ -66,12 +66,27 @@ namespace Pulperia.Controllers
                 ViewBag.TotalCompras = historicoVentas.Sum(x => x.Precio);
                 ViewBag.TotalVendido = historicoVentas.Sum(x => x.PrecioOriginalProducto * x.Cantidad);
                 ViewBag.TotalPeriodo = historicoVentas.Sum(x => x.Precio) - historicoVentas.Sum(x => x.PrecioOriginalProducto * x.Cantidad);
+
+                List<HistoricoPersona> listaPersona = new List<HistoricoPersona>();
+
+                foreach (var item in historicoVentas.Select(p => p.IdComprador).Distinct())
+                {
+                    var historico = historicoVentas.Where(x => x.IdComprador == item);
+                    listaPersona.Add(new HistoricoPersona()
+                    {
+                        Monto = historico.Sum(x => x.Precio),
+                        Nombre = historico.Select(x => x.NombreComprador).First()
+                    });            
+                }
+
+                ViewBag.PorPersona = listaPersona;
             }
             else
             {
                 ViewBag.TotalCompras = 0M;
                 ViewBag.TotalVendido = 0M;
                 ViewBag.TotalPeriodo = 0M;
+                ViewBag.PorPersona = new List<HistoricoPersona>();
             }
 
             return View(historicoVentas);
@@ -122,5 +137,11 @@ namespace Pulperia.Controllers
     {
         public int Mes { get; set; }
         public int Anno { get; set; }
+    }
+
+    public class HistoricoPersona
+    {
+        public string Nombre { get; set; }
+        public decimal Monto { get; set; }
     }
 }

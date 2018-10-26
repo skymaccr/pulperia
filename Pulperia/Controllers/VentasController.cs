@@ -9,6 +9,7 @@ using System.Web.Mvc;
 
 namespace Pulperia.Controllers
 {
+    [HandleError]
     public class VentasController : Controller
     {
         private PulperiaEntities db = new PulperiaEntities();
@@ -112,11 +113,10 @@ namespace Pulperia.Controllers
 
             //no se puede editar una venta de dias pasados si es un asociado
             if (ventas == null ||
-            (User.IsInRole("Asociado") && (
-            !ventas.FechaCompra.ToString("dd/MM/yyyy").Equals(DateTime.Now.ToString("dd/MM/yyyy"))) ||
+            (User.IsInRole("Asociado") && 
              DateTime.Now.Subtract(ventas.FechaCompra).Minutes > 5))
             {
-                return HttpNotFound();
+                throw new ApplicationException("No tiene permiso de borrar");
             }
 
             Session["CantidadPrevia"] = ventas.Cantidad;
@@ -137,7 +137,7 @@ namespace Pulperia.Controllers
         // POST: Ventas/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+        [HttpPost]        
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit([Bind(Include = "Id,IdComprador,IdProducto,Cantidad,Precio,FechaCompra")] Ventas ventas)
         {
@@ -189,17 +189,16 @@ namespace Pulperia.Controllers
 
             //no se pueden borrar ventas del pasado si es un asociado
             if (ventas == null ||
-            (User.IsInRole("Asociado") && (
-            !ventas.FechaCompra.ToString("dd/MM/yyyy").Equals(DateTime.Now.ToString("dd/MM/yyyy"))) ||
+            (User.IsInRole("Asociado") && 
              DateTime.Now.Subtract(ventas.FechaCompra).Minutes > 5))
             {
-                return HttpNotFound();
+                throw new ApplicationException("No tiene permiso de borrar");
             }
             return View(ventas);
         }
 
         // POST: Ventas/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost, ActionName("Delete")]       
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
