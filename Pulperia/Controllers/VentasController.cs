@@ -61,7 +61,7 @@ namespace Pulperia.Controllers
             else
                 ViewBag.IdComprador = new SelectList(db.Compradores, "Id", "Nombre");
 
-            ViewBag.IdProducto = new SelectList(db.Productos.Where(p => p.CantidadInventario > 0).Select(p => new { p.Id, p.Nombre }), "Id", "Nombre");
+            ViewBag.IdProducto = new SelectList(db.Productos.Where(p => p.CantidadInventario > 0).OrderBy(p => p.Nombre).Select(p => new { p.Id, p.Nombre }), "Id", "Nombre");
 
             return View();
         }

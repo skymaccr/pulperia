@@ -53,7 +53,7 @@ namespace Pulperia.Controllers
                     break;
             }
 
-            return View(productos);
+            return View(productos.OrderBy(p => p.Nombre).ThenBy(p => p.IdCategoria));
         }
 
         // GET: Productos/Details/5
