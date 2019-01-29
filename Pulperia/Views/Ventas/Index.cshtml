@@ -5,11 +5,13 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Lista de Compras</h2>
 
-<p>
-    @Html.ActionLink("Crear Nueva Compra", "Create")
+
+<p>    
+    <button class="btn btn-success btn-lg btn-block" onclick="location.href='@Url.Action("Create", "Ventas")';return false;">REGISTRAR COMPRA DE UN NUEVO PRODUCTO</button>
 </p>
+
+<h2>Mi lista de compras de este mes</h2>
 <table class="table">
     <tr>
         <th>
@@ -62,7 +64,7 @@
 <div>
     <table class="table">
         <tr>
-            <th>TOTAL:</th>
+            <th>TOTAL A PAGAR AL FIN DE MES:</th>
         </tr>
         <tr>
             <td>¢ @ViewBag.TotalCompras</td>            

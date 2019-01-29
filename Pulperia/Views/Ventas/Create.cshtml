@@ -5,7 +5,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Crear Compra</h2>
+<h2>Registrar compra de un producto</h2>
 
 
 @using (Html.BeginForm())
@@ -16,7 +16,7 @@
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         <div class="form-group">
-            @Html.LabelFor(model => model.IdComprador, "Comprador", htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.IdComprador, "Su Nombre", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.DropDownList("IdComprador", null, htmlAttributes: new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.IdComprador, "", new { @class = "text-danger" })
@@ -24,7 +24,7 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.IdProducto, "Producto", htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.IdProducto, "Nombre del Producto", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.DropDownList("IdProducto", null, htmlAttributes: new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.IdProducto, "", new { @class = "text-danger" })
@@ -32,7 +32,7 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.Cantidad, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.Cantidad, "Cantidad a Comprar", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(model => model.Cantidad, new { htmlAttributes = new { @class = "form-control", @min = 1, @max = 5 } })
                 @Html.ValidationMessageFor(model => model.Cantidad, "", new { @class = "text-danger" })
@@ -40,30 +40,49 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.Precio, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.Precio, "Precio Total", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(model => model.Precio, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.FechaCompra, "Fecha de Compra", htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.FechaCompra, "Fecha de esta Compra", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.Label("fechaCompra", DateTime.Now.ToString("dd/MM/yyyy"), new { htmlAttributes = new { @class = "form-control" } })
             </div>
         </div>
 
         <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Comprar" class="btn btn-default" />
+            <div class="col-lg-12">
+                <input type="submit" value="REGISTRAR ESTA COMPRA EN EL SISTEMA" class="btn btn-success btn-lg btn-default btn-block" style="
+    max-width: none;" />
             </div>
         </div>
     </div>
+
+
 }
 
+<hr />
+
 <div>
-    @Html.ActionLink("Regresar a la lista de compras", "Index")
+    <button class="btn btn-success btn-lg btn-block" onclick="location.href='@Url.Action("Index", "Ventas")';return false;">VER MIS COMPRAS DE ESTE MES</button>
 </div>
+
+<hr />
+<p>
+    <ul>
+        <li>El registro de compras de productos se hace producto a producto.</li>
+        <li>Para registrar la compra seleccione el producto y la cantidad.</li>
+        <li>Luego pulse el boton "Registrar esta compra en el sistema".</li>
+        <li>Cuando el producto es registrado el sistema le muestra una notificacion. Pulse OK en el boton del mensaje</li>
+        <li>Si desea registrar otro producto seleccione el producto y la cantidad y siga los pasos anteriores</li>
+        <li>Si desea salir pulse salir en la parte superior derecha de la pantalla</li>
+        <li>Si desea ver sus lista de compras del mes ingrese a "Ver mis compras de este mes"</li>
+        <li>Si tiene dificultades utilizando el sistema comuniquese con la junta directiva de ASOGUARUMO</li>
+    </ul>
+</p>
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
@@ -87,5 +106,14 @@
             }
         }
 
+    </script>
+}
+
+@if (@ViewBag.CompraRegistrada == true)
+{
+    <script type="text/javascript">
+        window.onload = function () {
+            alert('PULPERIA ASOGUARUMO\nSU COMPRA FUE REGISTRADA EXISTOSAMENTE EN EL SISTEMA!');
+        };
     </script>
 }

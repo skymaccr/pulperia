@@ -54,7 +54,7 @@ namespace Pulperia.Controllers
         }
 
         // GET: Ventas/Create
-        public ActionResult Create()
+        public ActionResult Create(bool compraRegistrada = false)
         {
             if (User.IsInRole("Asociado"))
                 ViewBag.IdComprador = new SelectList(db.Compradores.Where(c => c.Email == User.Identity.Name), "Id", "Nombre");
@@ -62,6 +62,11 @@ namespace Pulperia.Controllers
                 ViewBag.IdComprador = new SelectList(db.Compradores, "Id", "Nombre");
 
             ViewBag.IdProducto = new SelectList(db.Productos.Where(p => p.CantidadInventario > 0).OrderBy(p => p.Nombre).Select(p => new { p.Id, p.Nombre }), "Id", "Nombre");
+
+            if (compraRegistrada)
+            {
+                ViewBag.CompraRegistrada = true;               
+            }
 
             return View();
         }
@@ -84,13 +89,22 @@ namespace Pulperia.Controllers
                 producto.CantidadInventario -= ventas.Cantidad;
 
                 await db.SaveChangesAsync();
-                return RedirectToAction("Index");
+
+                //enviar el correo al usuario indicado la compra que acaba de hacer
+                EnviarCorreoVenta(ventas, User.Identity.Name);
+
+                return RedirectToAction("Create", "Ventas", new { compraRegistrada = true });
             }
 
             ViewBag.IdComprador = new SelectList(db.Compradores, "Id", "Nombre", ventas.IdComprador);
             ViewBag.IdProducto = new SelectList(db.Productos.Where(p => p.CantidadInventario > 0), "Id", "Nombre", ventas.IdProducto);
 
             return View(ventas);
+        }
+
+        private void EnviarCorreoVenta(Ventas ventas, string email)
+        {
+            return;
         }
 
         private decimal CalcularPrecio(int idProducto, int cantidad)
