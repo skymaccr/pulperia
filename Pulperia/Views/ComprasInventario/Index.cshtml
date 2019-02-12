@@ -25,8 +25,7 @@
                 <span>@ci.Id</span>
             </td>
             <td class="IdProducto">
-                <span>@ci.IdProducto</span>
-                <input type="text" value="@ci.IdProducto" style="display:none; color: black;" />
+                <span>@(ci.Productos?.Nombre)</span>
             </td>
             <td class="FechaCompra">
                 <span>@(ci.FechaCompra?.ToString("dd/MM/yyyy"))</span>
@@ -61,7 +60,14 @@
     <tr>
         <td style="width: 150px">
             Producto<br />
-            <input type="text" id="txProducto" style="width:140px; color: black;" />
+            @*<input type="text" id="txProducto" style="width:140px; color: black;" />*@
+            <select name="txProducto" id="txProducto" style="width:140px; color: black;">
+                <option value="0">Seleccione</option>
+                @foreach (var item in ViewBag.Productos.Items)
+                {
+                    <option value="@item.Id">@item.Nombre</option>
+                }
+            </select>
         </td>
         <td style="width: 150px">
             Fecha de Compra:<br />
@@ -142,6 +148,22 @@
         $("#tblCustomers").append(row);
     };
 
+    function SetProductPrice(idProducto) {
+        $.ajax({
+            type: "POST",
+            url: "/ComprasInventario/ObtenerPrecioProducto?idProducto=" + idProducto,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (r) {
+                $("#txtPrecio").val(r.precioProducto);
+            }
+        });
+    }
+
+    $("#txProducto").change(function () {
+        SetProductPrice($(this).val());
+    });
+
     //Add event handler.
     $("body").on("click", "#btnAdd", function () {
         var txProducto = $("#txProducto");
@@ -160,17 +182,7 @@
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             success: function (r) {
-                var row = $("#tblCustomers tr:last-child");
-                if ($("#tblCustomers tr:last-child span").eq(0).html() != "&nbsp;") {
-                    row = row.clone();
-                }
-                AppendRow(row, r.Id, r.IdProducto, r.FechaCompra, r.FechaVencimiento, r.CantidadComprada, r.Lote, r.PrecioIndividual);
-                txProducto.val("");
-                txtFechaCompra.val("");
-                txtFechaVencimiento.val("");
-                txtCantidad.val("");
-                txtLote.val("");
-                txtPrecio.val("");
+                location.reload();
             }
         });
     });
@@ -280,10 +292,9 @@
                 dateFormat: "dd/MM/yy",
                 changeMonth: true,
                 changeYear: true,
-                yearRange: '2018:2025',
+                yearRange: '2019:2025',
                 dayNamesMin: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa']
             });
-
         });
     </script>
 

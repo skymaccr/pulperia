@@ -28,6 +28,7 @@ namespace Pulperia.Models
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MMMM/yyyy}")]
         public System.DateTime FechaIngreso { get; set; }
         public int CantidadInventario { get; set; }
+        
         public decimal PrecioCompraIndividual { get; set; }
         public int IdCategoria { get; set; }       
         public System.DateTime FechaCreacion { get; set; }

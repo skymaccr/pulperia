@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
-using System.Threading.Tasks;
 using System.Web.Mvc;
 
 namespace Pulperia.Controllers
@@ -23,127 +22,24 @@ namespace Pulperia.Controllers
             return RedirectToAction("Index", "HistoricoComprasInventarios", new { ajusteEjecutado = true });
         }
 
+        [HttpPost]
+        public ActionResult ObtenerPrecioProducto(int idProducto)
+        {
+            var precio =  db.Productos.Where(p => p.Id == idProducto).Select(p => p.PrecioCompraIndividual).FirstOrDefault();
+            return Json(new { success = true, precioProducto = precio }, JsonRequestBehavior.AllowGet);
+        }
 
-        //// GET: ComprasInventario
-        //public async Task<ActionResult> Index()
-        //{
-        //    if (User.IsInRole("Asociado"))
-        //        return new HttpStatusCodeResult(HttpStatusCode.MethodNotAllowed);
-
-        //    var comprasInventario = db.ComprasInventario.Include(c => c.Productos);
-        //    return View(await comprasInventario.ToListAsync());
-        //}
-
-        //// GET: ComprasInventario/Details/5
-        //public async Task<ActionResult> Details(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-        //    }
-        //    ComprasInventario comprasInventario = await db.ComprasInventario.FindAsync(id);
-        //    if (comprasInventario == null)
-        //    {
-        //        return HttpNotFound();
-        //    }
-        //    return View(comprasInventario);
-        //}
-
-        //// GET: ComprasInventario/Create
-        //public ActionResult Create()
-        //{
-        //    ViewBag.IdProducto = new SelectList(db.Productos, "Id", "Nombre");
-        //    return View();
-        //}
-
-        //// POST: ComprasInventario/Create
-        //// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        //// more details see https://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<ActionResult> Create([Bind(Include = "Id,IdProducto,CantidadComprada,FechaCompra,FechaVencimiento,Lote,PrecioIndividual")] ComprasInventario comprasInventario)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        db.ComprasInventario.Add(comprasInventario);
-        //        await db.SaveChangesAsync();
-        //        return RedirectToAction("Index");
-        //    }
-
-        //    ViewBag.IdProducto = new SelectList(db.Productos, "Id", "Nombre", comprasInventario.IdProducto);
-        //    return View(comprasInventario);
-        //}
-
-        //// GET: ComprasInventario/Edit/5
-        //public async Task<ActionResult> Edit(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-        //    }
-        //    ComprasInventario comprasInventario = await db.ComprasInventario.FindAsync(id);
-        //    if (comprasInventario == null)
-        //    {
-        //        return HttpNotFound();
-        //    }
-        //    ViewBag.IdProducto = new SelectList(db.Productos, "Id", "Nombre", comprasInventario.IdProducto);
-        //    return View(comprasInventario);
-        //}
-
-        //// POST: ComprasInventario/Edit/5
-        //// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        //// more details see https://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<ActionResult> Edit([Bind(Include = "Id,IdProducto,CantidadComprada,FechaCompra,FechaVencimiento,Lote,PrecioIndividual")] ComprasInventario comprasInventario)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        db.Entry(comprasInventario).State = EntityState.Modified;
-        //        await db.SaveChangesAsync();
-        //        return RedirectToAction("Index");
-        //    }
-        //    ViewBag.IdProducto = new SelectList(db.Productos, "Id", "Nombre", comprasInventario.IdProducto);
-        //    return View(comprasInventario);
-        //}
-
-        //// GET: ComprasInventario/Delete/5
-        //public async Task<ActionResult> Delete(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-        //    }
-        //    ComprasInventario comprasInventario = await db.ComprasInventario.FindAsync(id);
-        //    if (comprasInventario == null)
-        //    {
-        //        return HttpNotFound();
-        //    }
-        //    return View(comprasInventario);
-        //}
-
-        //// POST: ComprasInventario/Delete/5
-        //[HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
-        //public async Task<ActionResult> DeleteConfirmed(int id)
-        //{
-        //    ComprasInventario comprasInventario = await db.ComprasInventario.FindAsync(id);
-        //    db.ComprasInventario.Remove(comprasInventario);
-        //    await db.SaveChangesAsync();
-        //    return RedirectToAction("Index");
-        //}
-
-
-        // GET: Home
         public ActionResult Index()
         {
             if (User.IsInRole("Asociado"))
                 return new HttpStatusCodeResult(HttpStatusCode.MethodNotAllowed);
 
-            List<ComprasInventario> comprasInventarios = db.ComprasInventario.ToList();
+            List<ComprasInventario> comprasInventarios = db.ComprasInventario.Include(c => c.Productos).ToList();
 
             //Add a Dummy Row.
             comprasInventarios.Insert(0, new ComprasInventario());
+
+            ViewBag.Productos = new SelectList(db.Productos.ToList(), "Id", "Nombre");
             return View(comprasInventarios);
         }
 
@@ -152,9 +48,8 @@ namespace Pulperia.Controllers
         {
             db.ComprasInventario.Add(comprasInventario);
             db.SaveChanges();
-
-            
-            return Newtonsoft.Json.JsonConvert.SerializeObject(comprasInventario);
+            var result = Newtonsoft.Json.JsonConvert.SerializeObject(comprasInventario);
+            return result;
         }
 
         [HttpPost]
@@ -163,12 +58,18 @@ namespace Pulperia.Controllers
             ComprasInventario updatedCI = (from c in db.ComprasInventario
                                            where c.Id == comprasInventario.Id
                                            select c).FirstOrDefault();
-            updatedCI.IdProducto = comprasInventario.IdProducto;
-            updatedCI.Lote = comprasInventario.Lote;
-            updatedCI.PrecioIndividual = comprasInventario.PrecioIndividual;
-            updatedCI.FechaCompra = comprasInventario.FechaCompra;
-            updatedCI.FechaVencimiento = comprasInventario.FechaVencimiento;
-            updatedCI.CantidadComprada = comprasInventario.CantidadComprada;
+
+            updatedCI.IdProducto = updatedCI.IdProducto;
+            if(!string.IsNullOrEmpty(comprasInventario.Lote))
+                updatedCI.Lote = comprasInventario.Lote;
+            if(comprasInventario.PrecioIndividual.HasValue)
+                updatedCI.PrecioIndividual = comprasInventario.PrecioIndividual;
+            if(comprasInventario.FechaCompra.HasValue)
+                updatedCI.FechaCompra = comprasInventario.FechaCompra;
+            if(comprasInventario.FechaVencimiento.HasValue)
+                updatedCI.FechaVencimiento = comprasInventario.FechaVencimiento;
+            if(comprasInventario.CantidadComprada.HasValue)
+                updatedCI.CantidadComprada = comprasInventario.CantidadComprada;
 
             db.SaveChanges();
 
