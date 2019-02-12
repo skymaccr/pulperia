@@ -1,10 +1,16 @@
-﻿using Pulperia.Models;
+﻿using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
+using Pulperia.Models;
+using Pulperia.Utils;
 using System;
+using System.Configuration;
 using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Mvc;
 
 namespace Pulperia.Controllers
@@ -13,6 +19,19 @@ namespace Pulperia.Controllers
     public class VentasController : Controller
     {
         private PulperiaEntities db = new PulperiaEntities();
+
+        private ApplicationUserManager _userManager;
+        public ApplicationUserManager UserManager
+        {
+            get
+            {
+                return _userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            }
+            private set
+            {
+                _userManager = value;
+            }
+        }
 
         // GET: Ventas
         public async Task<ActionResult> Index()
@@ -91,7 +110,7 @@ namespace Pulperia.Controllers
                 await db.SaveChangesAsync();
 
                 //enviar el correo al usuario indicado la compra que acaba de hacer
-                EnviarCorreoVenta(ventas, User.Identity.Name);
+                await EnviarCorreoVentaAsync(ventas, User.Identity.Name);
 
                 return RedirectToAction("Create", "Ventas", new { compraRegistrada = true });
             }
@@ -102,9 +121,41 @@ namespace Pulperia.Controllers
             return View(ventas);
         }
 
-        private void EnviarCorreoVenta(Ventas ventas, string email)
+        private async Task EnviarCorreoVentaAsync(Ventas ventas, string email)
         {
-            return;
+            StringBuilder emailHTML = new StringBuilder();
+            var template = new Templates();
+            var emailTemplate = template.GetHTMLTemplate(ConfigurationManager.AppSettings.Get("EmailFactura"));
+            emailTemplate = emailTemplate.Replace("[Anno]", DateTime.Now.Year.ToString());
+            emailTemplate = emailTemplate.Replace("[Total]", ventas.Precio.ToString());
+
+            var filaVentaTemplate = new StringBuilder();
+            filaVentaTemplate.Append("<tr>");
+            filaVentaTemplate.Append($"<td valign=\"top\" >{ventas.Cantidad}<br></td>");
+            filaVentaTemplate.Append($"<td valign=\"top\" >¢ {ventas.Precio}<br></td>");
+            filaVentaTemplate.Append(" <td valign=\top\" ><span style=\"color: rgb(235, 235, ");
+            filaVentaTemplate.Append(" 235); font-family: Lato, &quot;Helvetica");
+            filaVentaTemplate.Append(" Neue&quot;, Helvetica, Arial, sans-serif;");
+            filaVentaTemplate.Append(" font-size: 15px; font-style: normal;");
+            filaVentaTemplate.Append(" font-variant-ligatures: normal; font-variant-caps:");
+            filaVentaTemplate.Append(" normal; font-weight: 300; letter-spacing: normal;");
+            filaVentaTemplate.Append(" orphans: 2; text-align: start; text-indent: 0px;");
+            filaVentaTemplate.Append(" text-transform: none; white-space: normal; widows:");
+            filaVentaTemplate.Append(" 2; word-spacing: 0px; -webkit-text-stroke-width:");
+            filaVentaTemplate.Append(" 0px; background-color: rgb(43, 62, 80);");
+            filaVentaTemplate.Append(" text-decoration-style: initial;");
+            filaVentaTemplate.Append(" text-decoration-color: initial; display: inline");
+            filaVentaTemplate.Append($" !important; float: none;\" >{ventas.FechaCompra.ToString("dd/MM/yyyy HH:mm")} </ span ></ td > ");
+            filaVentaTemplate.Append($"<td valign=\"top\" >{ventas.Productos.Nombre.ToString()}<br></td>");
+            filaVentaTemplate.Append("</tr>");
+
+            emailTemplate = emailTemplate.Replace("[Ventas]", filaVentaTemplate.ToString());
+
+            var user = UserManager.FindByName(email);
+            if (user != null)
+            {
+                await UserManager.SendEmailAsync(user.Id, $"Su factura de compra", emailTemplate.ToString());
+            }
         }
 
         private decimal CalcularPrecio(int idProducto, int cantidad)
