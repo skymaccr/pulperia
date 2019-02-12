@@ -283,6 +283,7 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="Utils\CustomDateTimeConverter.cs" />
     <Compile Include="Utils\EmailManager.cs" />
   </ItemGroup>
   <ItemGroup>

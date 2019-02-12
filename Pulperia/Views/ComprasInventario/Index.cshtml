@@ -7,62 +7,288 @@
 
 <h2>Compras de Inventario</h2>
 
-<p>
-    @Html.ActionLink("Crear Nueva", "Create")
-</p>
-<table class="table">
+<table id="tblCustomers" class="table" cellpadding="0" cellspacing="0">
     <tr>
-        <th>
-            Cantidad Comprada
-        </th>
-        <th>
-            Fecha de Compra
-        </th>
-        <th>
-            Fecha Vencimiento
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Lote)
-        </th>
-        <th>
-            Precio Individual
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Productos.Nombre)
-        </th>
-        <th></th>
+        <th style="width:150px">ID</th>
+        <th style="width:150px">Producto</th>
+        <th style="width:150px">Fecha de Compra</th>
+        <th style="width:150px">Fecha de Vencimiento</th>
+        <th style="width:150px">Cantidad Comprada</th>
+        <th style="width:150px">Lote</th>
+        <th style="width:150px">Precio Individual</th>
+        <th style="width:150px"></th>
     </tr>
-
-    @foreach (var item in Model)
+    @foreach (var ci in Model)
     {
         <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.CantidadComprada)
+            <td class="Id">
+                <span>@ci.Id</span>
+            </td>
+            <td class="IdProducto">
+                <span>@ci.IdProducto</span>
+                <input type="text" value="@ci.IdProducto" style="display:none; color: black;" />
+            </td>
+            <td class="FechaCompra">
+                <span>@(ci.FechaCompra?.ToString("dd/MM/yyyy"))</span>
+                <input type="text" value="@(ci.FechaCompra?.ToString("dd/MM/yyyy"))" style="display:none; color: black;" class="calendario" />
+            </td>
+            <td class="FechaVencimiento">
+                <span>@(ci.FechaVencimiento?.ToString("dd/MM/yyyy"))</span>
+                <input type="text" value="@(ci.FechaVencimiento?.ToString("dd/MM/yyyy"))" style="display:none; color: black;" class="calendario" />
+            </td>
+            <td class="Cantidad">
+                <span>@ci.CantidadComprada</span>
+                <input type="text" value="@ci.CantidadComprada" style="display:none; color: black;" />
+            </td>
+            <td class="Lote">
+                <span>@ci.Lote</span>
+                <input type="text" value="@ci.Lote" style="display:none; color: black;" />
+            </td>
+            <td class="Precio">
+                <span>@ci.PrecioIndividual</span>
+                <input type="text" value="@ci.PrecioIndividual" style="display:none; color: black;" />
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.FechaCompra)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FechaVencimiento)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Lote)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PrecioIndividual)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Productos.Nombre)
-            </td>
-            <td>
-                @Html.ActionLink("Editar", "Edit", new { id = item.Id }) |
-                @Html.ActionLink("Detalles", "Details", new { id = item.Id }) |
-                @Html.ActionLink("Eliminar", "Delete", new { id = item.Id })
+                <a class="Edit" href="javascript:;">Editar</a>
+                <a class="Update" href="javascript:;" style="display:none">Actualizar</a>
+                <a class="Cancel" href="javascript:;" style="display:none">Cancelar</a>
+                <a class="Delete" href="javascript:;">Eliminar</a>
             </td>
         </tr>
     }
-
 </table>
+<table border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td style="width: 150px">
+            Producto<br />
+            <input type="text" id="txProducto" style="width:140px; color: black;" />
+        </td>
+        <td style="width: 150px">
+            Fecha de Compra:<br />
+            <input type="text" id="txtFechaCompra" style="width:140px; color: black;" class="calendario" />
+        </td>
+        <td style="width: 150px">
+            Fecha de Vencimiento:<br />
+            <input type="text" id="txtFechaVencimiento" style="width:140px; color: black;" class="calendario" />
+        </td>
+        <td style="width: 150px">
+            Cantidad Comprada:<br />
+            <input type="text" id="txtCantidad" style="width:140px; color: black;" />
+        </td>
+        <td style="width: 150px">
+            Lote:<br />
+            <input type="text" id="txtLote" style="width:140px; color: black;" />
+        </td>
+        <td style="width: 150px">
+            Precio Individual:<br />
+            <input type="text" id="txtPrecio" style="width:140px; color: black;" />
+        </td>
+        <td style="width: 200px">
+            <br />
+            <input type="button" id="btnAdd" value="Agregar" class="btn btn-primary" />
+        </td>
+    </tr>
+</table>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<script type="text/javascript" src="http://ajax.cdnjs.com/ajax/libs/json2/20110223/json2.js"></script>
+<script type="text/javascript">
+    $(function () {
+        //Remove the dummy row if data present.
+        if ($("#tblCustomers tr").length > 2) {
+            $("#tblCustomers tr:eq(1)").remove();
+        } else {
+            var row = $("#tblCustomers tr:last-child");
+            row.find(".Edit").hide();
+            row.find(".Delete").hide();
+            row.find("span").html('&nbsp;');
+        }
+    });
+
+    function AppendRow(row, id, idProducto, fechaCompra, fechaVencimiento, cantidad, lote, precio) {
+
+        //Bind ID
+        $(".Id", row).find("span").html(id);
+
+        //Bind idProducto.
+        $(".IdProducto", row).find("span").html(idProducto);
+        $(".IdProducto", row).find("input").val(idProducto);
+
+        //Bind fechaCompra.
+        $(".FechaCompra", row).find("span").html(fechaCompra);
+        $(".FechaCompra", row).find("input").val(fechaCompra);
+
+        //Bind fechaVencimiento.
+        $(".FechaVencimiento", row).find("span").html(fechaVencimiento);
+        $(".FechaVencimiento", row).find("input").val(fechaVencimiento);
+
+        //Bind cantidad.
+        $(".Cantidad", row).find("span").html(cantidad);
+        $(".Cantidad", row).find("input").val(cantidad);
+
+        //Bind cantidad.
+        $(".Cantidad", row).find("span").html(cantidad);
+        $(".Cantidad", row).find("input").val(cantidad);
+
+        //Bind lote.
+        $(".Lote", row).find("span").html(lote);
+        $(".Lote", row).find("input").val(lote);
+
+        //Bind lote.
+        $(".Precio", row).find("span").html(precio);
+        $(".Precio", row).find("input").val(precio);
+
+        row.find(".Edit").show();
+        row.find(".Delete").show();
+        $("#tblCustomers").append(row);
+    };
+
+    //Add event handler.
+    $("body").on("click", "#btnAdd", function () {
+        var txProducto = $("#txProducto");
+        var txtFechaCompra = $("#txtFechaCompra");
+        var txtFechaVencimiento = $("#txtFechaVencimiento");
+        var txtCantidad = $("#txtCantidad");
+        var txtLote = $("#txtLote");
+        var txtPrecio = $("#txtPrecio");
+        $.ajax({
+            type: "POST",
+            url: "/ComprasInventario/InsertComprasInventario",
+            data: '{IdProducto: "' + txProducto.val() + '", CantidadComprada: "' + txtCantidad.val() +
+                '", FechaCompra: "' + txtFechaCompra.val() + '", FechaCompra: "' + txtFechaCompra.val() +
+                '", FechaVencimiento: "' + txtFechaVencimiento.val() + '", Lote: "' + txtLote.val() +
+                '", PrecioIndividual: "' + txtPrecio.val() + '"}',
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (r) {
+                var row = $("#tblCustomers tr:last-child");
+                if ($("#tblCustomers tr:last-child span").eq(0).html() != "&nbsp;") {
+                    row = row.clone();
+                }
+                AppendRow(row, r.Id, r.IdProducto, r.FechaCompra, r.FechaVencimiento, r.CantidadComprada, r.Lote, r.PrecioIndividual);
+                txProducto.val("");
+                txtFechaCompra.val("");
+                txtFechaVencimiento.val("");
+                txtCantidad.val("");
+                txtLote.val("");
+                txtPrecio.val("");
+            }
+        });
+    });
+
+    //Edit event handler.
+    $("body").on("click", "#tblCustomers .Edit", function () {
+        var row = $(this).closest("tr");
+        $("td", row).each(function () {
+            if ($(this).find("input").length > 0) {
+                $(this).find("input").show();
+                $(this).find("span").hide();
+            }
+        });
+        row.find(".Update").show();
+        row.find(".Cancel").show();
+        row.find(".Delete").hide();
+        $(this).hide();
+    });
+
+    //Update event handler.
+    $("body").on("click", "#tblCustomers .Update", function () {
+        var row = $(this).closest("tr");
+        $("td", row).each(function () {
+            if ($(this).find("input").length > 0) {
+                var span = $(this).find("span");
+                var input = $(this).find("input");
+                span.html(input.val());
+                span.show();
+                input.hide();
+            }
+        });
+        row.find(".Edit").show();
+        row.find(".Delete").show();
+        row.find(".Cancel").hide();
+        $(this).hide();
+
+        var comprasInventario = {};
+        comprasInventario.Id = row.find(".Id").find("span").html();
+        comprasInventario.IdProducto = row.find(".IdProducto").find("span").html();
+        comprasInventario.CantidadComprada = row.find(".Cantidad").find("span").html();
+        comprasInventario.FechaCompra = row.find(".FechaCompra").find("span").html();
+        comprasInventario.FechaVencimiento = row.find(".FechaVencimiento").find("span").html();
+        comprasInventario.Lote = row.find(".Lote").find("span").html();
+        comprasInventario.PrecioIndividual = row.find(".Precio").find("span").html();
+
+        $.ajax({
+            type: "POST",
+            url: "/ComprasInventario/UpdateComprasInventario",
+            data: '{comprasInventario:' + JSON.stringify(comprasInventario) + '}',
+            contentType: "application/json; charset=utf-8",
+            dataType: "json"
+        });
+    });
+
+    //Cancel event handler.
+    $("body").on("click", "#tblCustomers .Cancel", function () {
+        var row = $(this).closest("tr");
+        $("td", row).each(function () {
+            if ($(this).find("input").length > 0) {
+                var span = $(this).find("span");
+                var input = $(this).find("input");
+                input.val(span.html());
+                span.show();
+                input.hide();
+            }
+        });
+        row.find(".Edit").show();
+        row.find(".Delete").show();
+        row.find(".Update").hide();
+        $(this).hide();
+    });
+
+    //Delete event handler.
+    $("body").on("click", "#tblCustomers .Delete", function () {
+        if (confirm("Do you want to delete this row?")) {
+            var row = $(this).closest("tr");
+            var comprasInventarioId = row.find("span").html();
+            $.ajax({
+                type: "POST",
+                url: "/ComprasInventario/DeleteComprasInventario",
+                data: '{ciID: ' + comprasInventarioId + '}',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    if ($("#tblCustomers tr").length > 2) {
+                        row.remove();
+                    } else {
+                        row.find(".Edit").hide();
+                        row.find(".Delete").hide();
+                        row.find("span").html('&nbsp;');
+                    }
+                }
+            });
+        }
+    });
+</script>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/jqueryui")
+    @Styles.Render("~/Content/cssjqryUi")
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $('.calendario').datepicker({
+                dateFormat: "dd/MM/yy",
+                changeMonth: true,
+                changeYear: true,
+                yearRange: '2018:2025',
+                dayNamesMin: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa']
+            });
+
+        });
+    </script>
+
+}
+
 
 @using (Html.BeginForm("AjusteInventario", "ComprasInventario"))
 {

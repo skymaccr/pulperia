@@ -12,17 +12,22 @@ namespace Pulperia.Models
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
+    using Newtonsoft.Json;
+    using Pulperia.Utils;
 
     public partial class ComprasInventario
     {
         public int Id { get; set; }
         public Nullable<int> IdProducto { get; set; }
         public Nullable<int> CantidadComprada { get; set; }
+        [JsonConverter(typeof(CustomDateTimeConverter))]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MMMM/yyyy}")]
         public Nullable<System.DateTime> FechaCompra { get; set; }
+        [JsonConverter(typeof(CustomDateTimeConverter))]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MMMM/yyyy}")]
         public Nullable<System.DateTime> FechaVencimiento { get; set; }
         public string Lote { get; set; }
+        [DisplayFormat(DataFormatString = "{0:C0}")]
         public Nullable<decimal> PrecioIndividual { get; set; }
     
         public virtual Productos Productos { get; set; }
