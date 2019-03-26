@@ -39,7 +39,7 @@ namespace Pulperia.Controllers
             //Add a Dummy Row.
             comprasInventarios.Insert(0, new ComprasInventario());
 
-            ViewBag.Productos = new SelectList(db.Productos.ToList(), "Id", "Nombre");
+            ViewBag.Productos = new SelectList(db.Productos.OrderBy(o => o.Nombre).ToList(), "Id", "Nombre");
             return View(comprasInventarios);
         }
 

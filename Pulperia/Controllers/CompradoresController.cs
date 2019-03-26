@@ -20,7 +20,7 @@ namespace Pulperia.Controllers
         // GET: Compradores
         public async Task<ActionResult> Index()
         {            
-            return View(await db.Compradores.ToListAsync());
+            return View(await db.Compradores.OrderBy(o => o.Nombre).ToListAsync());
         }
 
         // GET: Compradores/Details/5

@@ -77,7 +77,7 @@ namespace Pulperia.Controllers
                 filaVentaTemplate.Append("<tr>");
                 filaVentaTemplate.Append("<td valign=\"top\" >[Cantidad]<br></td>");
                 filaVentaTemplate.Append("<td valign=\"top\" >¢ [Precio]<br></td>");
-                filaVentaTemplate.Append(" <td valign=\top\" ><span style=\"color: rgb(235, 235, ");
+                filaVentaTemplate.Append(" <td valign=\"top\" ><span style=\"color: rgb(235, 235, ");
                 filaVentaTemplate.Append(" 235); font-family: Lato, &quot;Helvetica");
                 filaVentaTemplate.Append(" Neue&quot;, Helvetica, Arial, sans-serif;");
                 filaVentaTemplate.Append(" font-size: 15px; font-style: normal;");

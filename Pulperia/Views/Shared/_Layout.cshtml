@@ -73,7 +73,7 @@
                         <li>@Html.ActionLink("Comprar", "Index", "Ventas")</li>
                     </ul>
                 }
-               
+
                 @Html.Partial("_LoginPartial")
             </div>
         </div>
@@ -89,5 +89,19 @@
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
+    <script type="text/javascript" language="javascript">
+        $(document).on('submit', 'form', function () {
+            var buttons = $(this).find('[type="submit"]');
+            if ($(this).valid()) {
+                buttons.each(function (btn) {
+                    $(buttons[btn]).prop('disabled', true);
+                });
+            } else {
+                buttons.each(function (btn) {
+                    $(buttons[btn]).prop('disabled', false);
+                });
+            }
+        });
+    </script>
 </body>
 </html>

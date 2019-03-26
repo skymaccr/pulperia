@@ -6,7 +6,12 @@
 }
 
 <h2>Registrar compra de un producto</h2>
-
+@if (@TempData["SuccessMsg"] != null)
+{
+    <div class="alert alert-info" id="success-alert">
+        <strong>SU COMPRA FUE REGISTRADA EXISTOSAMENTE!</strong>
+    </div>
+}
 
 @using (Html.BeginForm())
 {
@@ -105,15 +110,16 @@
                     });
             }
         }
-
     </script>
+
+    @if (@TempData["SuccessMsg"] != null)
+    {
+        <script type="text/javascript">
+            $("#success-alert").fadeTo(2000, 500).slideUp(500, function () {
+                $("#success-alert").slideUp(500);
+            });
+
+        </script>
+    }
 }
 
-@if (@ViewBag.CompraRegistrada == true)
-{
-    <script type="text/javascript">
-        window.onload = function () {
-            alert('PULPERIA ASOGUARUMO\nSU COMPRA FUE REGISTRADA EXISTOSAMENTE EN EL SISTEMA!');
-        };
-    </script>
-}

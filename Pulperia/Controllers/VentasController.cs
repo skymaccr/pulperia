@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
+using Pulperia.App_Start;
 using Pulperia.Models;
 using Pulperia.Utils;
 using System;
@@ -73,7 +74,7 @@ namespace Pulperia.Controllers
         }
 
         // GET: Ventas/Create
-        public ActionResult Create(bool compraRegistrada = false)
+        public ActionResult Create()
         {
             if (User.IsInRole("Asociado"))
                 ViewBag.IdComprador = new SelectList(db.Compradores.Where(c => c.Email == User.Identity.Name), "Id", "Nombre");
@@ -81,11 +82,6 @@ namespace Pulperia.Controllers
                 ViewBag.IdComprador = new SelectList(db.Compradores, "Id", "Nombre");
 
             ViewBag.IdProducto = new SelectList(db.Productos.Where(p => p.CantidadInventario > 0).OrderBy(p => p.Nombre).Select(p => new { p.Id, p.Nombre }), "Id", "Nombre");
-
-            if (compraRegistrada)
-            {
-                ViewBag.CompraRegistrada = true;               
-            }
 
             return View();
         }
@@ -112,7 +108,8 @@ namespace Pulperia.Controllers
                 //enviar el correo al usuario indicado la compra que acaba de hacer
                 await EnviarCorreoVentaAsync(ventas, User.Identity.Name);
 
-                return RedirectToAction("Create", "Ventas", new { compraRegistrada = true });
+                TempData["SuccessMsg"] = true;
+                return RedirectToAction("Create", "Ventas");
             }
 
             ViewBag.IdComprador = new SelectList(db.Compradores, "Id", "Nombre", ventas.IdComprador);
@@ -133,7 +130,7 @@ namespace Pulperia.Controllers
             filaVentaTemplate.Append("<tr>");
             filaVentaTemplate.Append($"<td valign=\"top\" >{ventas.Cantidad}<br></td>");
             filaVentaTemplate.Append($"<td valign=\"top\" >¢ {ventas.Precio}<br></td>");
-            filaVentaTemplate.Append(" <td valign=\top\" ><span style=\"color: rgb(235, 235, ");
+            filaVentaTemplate.Append(" <td valign=\"top\" ><span style=\"color: rgb(235, 235, ");
             filaVentaTemplate.Append(" 235); font-family: Lato, &quot;Helvetica");
             filaVentaTemplate.Append(" Neue&quot;, Helvetica, Arial, sans-serif;");
             filaVentaTemplate.Append(" font-size: 15px; font-style: normal;");
@@ -178,7 +175,7 @@ namespace Pulperia.Controllers
 
             //no se puede editar una venta de dias pasados si es un asociado
             if (ventas == null ||
-            (User.IsInRole("Asociado") && 
+            (User.IsInRole("Asociado") &&
              DateTime.Now.Subtract(ventas.FechaCompra).Minutes > 5))
             {
                 throw new ApplicationException("No tiene permiso de borrar");
@@ -202,7 +199,7 @@ namespace Pulperia.Controllers
         // POST: Ventas/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]        
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit([Bind(Include = "Id,IdComprador,IdProducto,Cantidad,Precio,FechaCompra")] Ventas ventas)
         {
@@ -254,7 +251,7 @@ namespace Pulperia.Controllers
 
             //no se pueden borrar ventas del pasado si es un asociado
             if (ventas == null ||
-            (User.IsInRole("Asociado") && 
+            (User.IsInRole("Asociado") &&
              DateTime.Now.Subtract(ventas.FechaCompra).Minutes > 5))
             {
                 throw new ApplicationException("No tiene permiso de borrar");
@@ -263,7 +260,7 @@ namespace Pulperia.Controllers
         }
 
         // POST: Ventas/Delete/5
-        [HttpPost, ActionName("Delete")]       
+        [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
