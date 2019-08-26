@@ -19,7 +19,17 @@ namespace Pulperia.Controllers
         [Route("productos/obtenerPrecio")]
         public decimal ObtenerPrecio(int idProducto, int cantidad)
         {
-            var ganancia = Convert.ToDecimal(db.Parametros.Where(p => p.Nombre == "PorcentageGanancia" && p.FechaInicio < DateTime.Now && !p.FechaFin.HasValue).FirstOrDefault().Valor);
+            decimal ganancia = 1;
+            bool esAsociado = db.Compradores.Where(c => c.Email == User.Identity.Name).Single().EsAsociado;
+
+            if (esAsociado)
+            {
+                ganancia = Convert.ToDecimal(db.Parametros.Where(p => p.Nombre == "PorcentageGananciaAsociado" && p.FechaInicio < DateTime.Now && !p.FechaFin.HasValue).FirstOrDefault().Valor);
+            }
+            else
+            {
+                ganancia = Convert.ToDecimal(db.Parametros.Where(p => p.Nombre == "PorcentageGananciaNoAsociado" && p.FechaInicio < DateTime.Now && !p.FechaFin.HasValue).FirstOrDefault().Valor);
+            }
             var precio = db.Productos.Where(p => p.Id == idProducto).Single().PrecioCompraIndividual;
             var subTotal = decimal.Round(precio * ganancia, 0, MidpointRounding.AwayFromZero) * cantidad;
 
